@@ -38,7 +38,7 @@ function addUser(req, res) {
   res.status(201).json(newUser);
 }
 
-function changeUserName(req, res) {
+function modifyUser(req, res) {
   if (req.body.name.trim() === "") {
     console.log(req.body.name.trim());
     res.status(400).json({ error: "name must be a non empty string" });
@@ -69,6 +69,6 @@ module.exports = {
   getUser,
   getUsers,
   addUser,
-  changeUserName,
+  modifyUser,
   deleteUser,
 };
