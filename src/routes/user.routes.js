@@ -6,4 +6,5 @@ router.get("/", controller.getUsers);
 router.get("/:id", controller.getUser);
 router.post("/", controller.addUser);
 router.patch("/:id", controller.changeUserName);
+router.delete("/:id", controller.deleteUser);
 module.exports = router;

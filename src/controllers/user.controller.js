@@ -52,10 +52,23 @@ function changeUserName(req, res) {
   }
   res.status(404).json({ error: "not found" });
 }
+function deleteUser(req, res) {
+  const id = req.params.id;
+  const user = users.find((single) => single.id == id);
+  if (user) {
+    users.splice(users.indexOf(user), 1);
+    res.status(200).json({ msg: "user deleted successfully" });
+    console.log(users);
+    return;
+  }
+  res.status(404).json({ error: "user not found" });
+  return;
+}
 
 module.exports = {
   getUser,
   getUsers,
   addUser,
   changeUserName,
+  deleteUser,
 };
