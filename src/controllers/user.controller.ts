@@ -1,9 +1,15 @@
-const users = [
+import { Request, Response, NextFunction } from "express";
+
+type User = {
+  id: number;
+  name: string;
+};
+const users: User[] = [
   { id: 1, name: "Alice" },
   { id: 2, name: "Bob" },
 ];
 
-function changeUserName(argId, argName) {
+function changeUserName(argId: number, argName: string) {
   const user = users.find((single) => single.id == argId);
   if (user) {
     user.name = argName;
@@ -12,11 +18,11 @@ function changeUserName(argId, argName) {
   return null;
 }
 
-function getUsers(req, res) {
+export function getUsers(req: Request, res: Response) {
   res.status(200).json(users);
 }
-function getUser(req, res) {
-  const id = req.params.id;
+export function getUser(req: Request, res: Response) {
+  const id = Number(req.params.id);
 
   const user = users.find((single) => single.id == id);
 
@@ -27,7 +33,7 @@ function getUser(req, res) {
   }
   res.json(user);
 }
-function addUser(req, res) {
+export function addUser(req: Request, res: Response) {
   const newUser = {
     id: users.length + 1,
     name: req.body.name,
@@ -38,22 +44,22 @@ function addUser(req, res) {
   res.status(201).json(newUser);
 }
 
-function modifyUser(req, res) {
+export function modifyUser(req: Request, res: Response) {
   if (req.body.name.trim() === "") {
     console.log(req.body.name.trim());
     res.status(400).json({ error: "name must be a non empty string" });
     return;
   }
 
-  const result = changeUserName(req.params.id, req.body.name);
+  const result = changeUserName(Number(req.params.id), req.body.name);
   if (result) {
     res.status(200).json(result);
     return;
   }
   res.status(404).json({ error: "not found" });
 }
-function deleteUser(req, res) {
-  const id = req.params.id;
+export function deleteUser(req: Request, res: Response) {
+  const id = Number(req.params.id);
   const user = users.find((single) => single.id == id);
   if (user) {
     users.splice(users.indexOf(user), 1);
@@ -64,11 +70,3 @@ function deleteUser(req, res) {
   res.status(404).json({ error: "user not found" });
   return;
 }
-
-module.exports = {
-  getUser,
-  getUsers,
-  addUser,
-  modifyUser,
-  deleteUser,
-};

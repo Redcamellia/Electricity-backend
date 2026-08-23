@@ -1,4 +1,6 @@
-function validateUser(req, res, next) {
+import { Request, Response, NextFunction } from "express";
+
+export function validateUser(req: Request, res: Response, next: NextFunction) {
   const id = Number(req.params.id);
   const name = req.body.name;
   if (Number.isNaN(id)) {
@@ -13,5 +15,3 @@ function validateUser(req, res, next) {
 
   next();
 }
-
-module.exports = validateUser;

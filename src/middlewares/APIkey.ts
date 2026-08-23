@@ -1,4 +1,6 @@
-function apiKey(req, res, next) {
+import { Request, Response, NextFunction } from "express";
+
+export function apiKey(req: Request, res: Response, next: NextFunction) {
   const key = req.header("express-api-key");
 
   if (key !== "ehsan") {
@@ -8,5 +10,3 @@ function apiKey(req, res, next) {
   }
   next();
 }
-
-module.exports = apiKey;
