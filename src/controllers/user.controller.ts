@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import AppError from "../Errors/appError";
 
 type User = {
   id: number;
@@ -56,7 +57,7 @@ export function modifyUser(req: Request, res: Response) {
     res.status(200).json(result);
     return;
   }
-  res.status(404).json({ error: "not found" });
+  throw new AppError("user not found", 404);
 }
 export function deleteUser(req: Request, res: Response) {
   const id = Number(req.params.id);
