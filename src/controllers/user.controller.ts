@@ -1,10 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import AppError from "../Errors/appError";
+import { User } from "../types/User";
+import { getAllUsers } from "../services/users.service";
 
-type User = {
-  id: number;
-  name: string;
-};
 const users: User[] = [
   { id: 1, name: "Alice" },
   { id: 2, name: "Bob" },
@@ -19,8 +17,9 @@ function changeUserName(argId: number, argName: string) {
   return null;
 }
 
-export function getUsers(req: Request, res: Response) {
-  res.status(200).json(users);
+export async function getUsers(req: Request, res: Response) {
+  const queryResult = await getAllUsers();
+  res.status(200).json(queryResult);
 }
 export function getUser(req: Request, res: Response) {
   const id = Number(req.params.id);
