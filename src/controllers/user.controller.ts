@@ -1,72 +1,66 @@
 import { Request, Response, NextFunction } from "express";
 import AppError from "../Errors/appError";
-import { User } from "../types/User";
-import { getAllUsers } from "../services/users.service";
+import pool from "../db";
 
-const users: User[] = [
-  { id: 1, name: "Alice" },
-  { id: 2, name: "Bob" },
-];
-
-function changeUserName(argId: number, argName: string) {
-  const user = users.find((single) => single.id == argId);
-  if (user) {
-    user.name = argName;
-    return user.id;
-  }
-  return null;
+async function changeUserName(argId: number, argName: string) {
+  const result = await pool.query(
+    "UPDATE users SET name = $1 WHERE id = $2 RETURNING *",
+    [argName, argId],
+  );
+  if (result.rows[0] == undefined)
+    throw new AppError("such user does not exist", 404);
+  return result.rows[0];
 }
 
 export async function getUsers(req: Request, res: Response) {
-  const queryResult = await getAllUsers();
-  res.status(200).json(queryResult);
+  const queryResult = await pool.query("SELECT * FROM users");
+  const rows = queryResult.rows;
+  res.status(200).json(rows);
 }
-export function getUser(req: Request, res: Response) {
+export async function getUser(req: Request, res: Response) {
   const id = Number(req.params.id);
-
-  const user = users.find((single) => single.id == id);
+  console.log(id);
+  const queryResult = await pool.query("SELECT * FROM users WHERE id = $1", [
+    id,
+  ]);
+  const user = queryResult.rows[0];
 
   if (!user) {
-    res.status(404).json({ error: "not found" });
-    res.end(JSON.stringify({ error: "user not found" }));
+    throw new AppError("user not found", 404);
+
     return;
   }
   res.json(user);
 }
-export function addUser(req: Request, res: Response) {
-  const newUser = {
-    id: users.length + 1,
-    name: req.body.name,
-  };
-
-  users.push(newUser);
+export async function addUser(req: Request, res: Response) {
+  const queryResult = await pool.query(
+    "INSERT INTO users (name , email) VALUES ($1 ,$2) RETURNING *",
+    [req.body.name, req.body.email],
+  );
+  const newUser = queryResult.rows[0];
 
   res.status(201).json(newUser);
 }
 
-export function modifyUser(req: Request, res: Response) {
+export async function modifyUser(req: Request, res: Response) {
   if (req.body.name.trim() === "") {
-    console.log(req.body.name.trim());
-    res.status(400).json({ error: "name must be a non empty string" });
+    throw new AppError("name must be a non empty string", 400);
     return;
   }
 
-  const result = changeUserName(Number(req.params.id), req.body.name);
-  if (result) {
-    res.status(200).json(result);
-    return;
-  }
-  throw new AppError("user not found", 404);
+  const result = await changeUserName(Number(req.params.id), req.body.name);
+  res.status(200).json(result);
 }
-export function deleteUser(req: Request, res: Response) {
+export async function deleteUser(req: Request, res: Response) {
   const id = Number(req.params.id);
-  const user = users.find((single) => single.id == id);
-  if (user) {
-    users.splice(users.indexOf(user), 1);
-    res.status(200).json({ msg: "user deleted successfully" });
-    console.log(users);
+  const queryResult = await pool.query(
+    "DELETE FROM users WHERE id = $1 RETURNING *",
+    [id],
+  );
+  if (queryResult.rows[0] == undefined) {
+    throw new AppError("user not found", 404);
     return;
   }
-  res.status(404).json({ error: "user not found" });
+  res.status(200).json(queryResult.rows[0]);
   return;
 }
