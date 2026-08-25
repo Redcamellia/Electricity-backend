@@ -23,7 +23,11 @@ export async function getUser(req: Request, res: Response) {
   res.json(user);
 }
 export async function addUser(req: Request, res: Response) {
-  const newUser = await addUserDB(req.body.name, req.body.email);
+  const newUser = await addUserDB(
+    req.body.name,
+    req.body.email,
+    req.body.password,
+  );
 
   res.status(201).json(newUser);
 }

@@ -21,10 +21,10 @@ export async function getAllUsersDB() {
   return result.rows;
 }
 
-export async function addUserDB(name: string, email: string) {
+export async function addUserDB(name: string, email: string, password: string) {
   const queryResult = await pool.query(
-    "INSERT INTO users (name , email) VALUES ($1 ,$2) RETURNING *",
-    [name, email],
+    "INSERT INTO users (name , email , user_password) VALUES ($1 ,$2 , $3) RETURNING *",
+    [name, email, password],
   );
   return queryResult.rows[0];
 }
