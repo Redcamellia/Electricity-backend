@@ -37,3 +37,11 @@ export async function deleteUserDB(id: number) {
 
   return queryResult.rows[0];
 }
+
+export async function getUserPassword(id: number) {
+  const queryResult = await pool.query(
+    "SELECT user_password FROM users WHERE id = $1",
+    [id],
+  );
+  return queryResult.rows[0].user_password;
+}

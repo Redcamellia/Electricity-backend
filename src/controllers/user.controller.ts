@@ -1,12 +1,11 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import AppError from "../Errors/appError";
 import pool from "../db";
 import {
-  getUserByIdDB,
   changeUserNameDB,
-  getAllUsersDB,
   deleteUserDB,
-  addUserDB,
+  getAllUsersDB,
+  getUserByIdDB,
 } from "../repositories/users.repository";
 
 export async function getUsers(req: Request, res: Response) {
@@ -21,15 +20,6 @@ export async function getUser(req: Request, res: Response) {
     throw new AppError("user not found", 404);
   }
   res.json(user);
-}
-export async function addUser(req: Request, res: Response) {
-  const newUser = await addUserDB(
-    req.body.name,
-    req.body.email,
-    req.body.password,
-  );
-
-  res.status(201).json(newUser);
 }
 
 export async function modifyUser(req: Request, res: Response) {

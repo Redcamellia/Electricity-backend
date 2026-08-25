@@ -1,17 +1,15 @@
-import { Express, Router } from "express";
+import { Router } from "express";
 import {
+  deleteUser,
   getUser,
   getUsers,
-  addUser,
   modifyUser,
-  deleteUser,
 } from "../controllers/user.controller";
 import { validateUser } from "../middlewares/validateUser";
 
-export const router = Router();
+export const userRouter = Router();
 
-router.get("/", getUsers);
-router.get("/:id", getUser);
-router.post("/", addUser);
-router.patch("/:id", validateUser, modifyUser);
-router.delete("/:id", deleteUser);
+userRouter.get("/", getUsers);
+userRouter.get("/:id", getUser);
+userRouter.patch("/:id", validateUser, modifyUser);
+userRouter.delete("/:id", deleteUser);
