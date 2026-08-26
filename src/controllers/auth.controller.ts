@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { hashPassword, comparePassword } from "../services/Auth.service";
 import {
   addUserDB,
+  getUserByEmail,
   getUserByIdDB,
   getUserPassword,
 } from "../repositories/users.repository";
@@ -10,13 +11,13 @@ import AppError from "../Errors/appError";
 import { User } from "../types/User";
 
 export async function authLoginController(req: Request, res: Response) {
-  const userPassword = await getUserPassword(req.body.id);
-  const userObject = await getUserByIdDB(req.body.id);
+  const userPassword = await getUserPassword(req.body.email);
+  const userObject = await getUserByEmail(req.body.email);
   console.log(userPassword);
   const isValid = await comparePassword(req.body.password, userPassword);
   if (isValid) {
     const token = sign(userObject, process.env.JWT_SECRET as string);
-    res.status(200).json({ token });
+    res.status(200).json({ token: token });
     return;
   }
   throw new AppError("wrong credentials", 401);
