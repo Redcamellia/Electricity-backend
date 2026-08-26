@@ -1,11 +1,17 @@
 import pool from "../db";
+import AppError from "../Errors/appError";
+import { User } from "../types/User";
 
-export async function getUserByIdDB(id: number) {
-  const queryResult = await pool.query("SELECT * FROM users WHERE id = $1", [
-    id,
-  ]);
+export async function getUserByIdDB(id: number): Promise<User> {
+  const queryResult = await pool.query(
+    "SELECT name,email,id FROM users WHERE id = $1",
+    [id],
+  );
   const user = queryResult.rows[0];
-  return user;
+  if (user) {
+    return user;
+  }
+  throw new AppError("user not found", 404);
 }
 
 export async function changeUserNameDB(argId: number, argName: string) {
@@ -43,5 +49,9 @@ export async function getUserPassword(id: number) {
     "SELECT user_password FROM users WHERE id = $1",
     [id],
   );
-  return queryResult.rows[0].user_password;
+  const userPassword = queryResult.rows[0].user_password;
+  if (userPassword) {
+    return userPassword;
+  }
+  throw new AppError("user not found", 404);
 }

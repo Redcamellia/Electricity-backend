@@ -1,12 +1,17 @@
 import express from "express";
-
+import "dotenv/config";
 import pool from "./db";
 import { ErrorHandler } from "./middlewares/ErrorHandler";
 import { logger } from "./middlewares/Logger";
 import { authRouter } from "./routes/auth.routes";
 import { userRouter } from "./routes/user.routes";
-
+import cors from "cors";
 const app = express();
+app.use(
+  cors({
+    origin: "http://localhost:8081",
+  }),
+);
 app.use(express.json());
 app.use(logger);
 app.use("/users", userRouter);
