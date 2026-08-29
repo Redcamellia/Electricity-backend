@@ -6,6 +6,7 @@ import { logger } from "./middlewares/Logger";
 import { authRouter } from "./routes/auth.routes";
 import { userRouter } from "./routes/user.routes";
 import cors from "cors";
+import { postsRouter } from "./routes/posts.routes";
 const app = express();
 app.use(
   cors({
@@ -16,6 +17,7 @@ app.use(express.json());
 app.use(logger);
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
+app.use("/posts", postsRouter);
 app.get("/", async (req, res) => {
   const result = await pool.query("SELECT * FROM users ORDER BY id");
   res.json(result.rows);

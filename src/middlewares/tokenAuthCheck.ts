@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { verify } from "jsonwebtoken";
 import { getUserByEmail } from "../repositories/users.repository";
+import AppError from "../Errors/appError";
 
 export async function tokenAuthCheck(
   req: Request,
@@ -16,11 +17,9 @@ export async function tokenAuthCheck(
     process.env.JWT_SECRET as string,
   );
   if (decoded != userId.toString()) {
-    console.log("login failed 401");
-    console.log(decoded + " = decoded");
-    console.log(userId + " = userID");
+    throw new AppError("unauthorized", 401);
   } else {
-    console.log("user is authorized");
+    // console.log("user is authorized");
   }
 
   next();
