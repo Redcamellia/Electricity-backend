@@ -7,9 +7,9 @@ export async function getAllPosts() {
   return result.rows;
 }
 
-export async function getAllPostsByUser(id: string) {
+export async function getAllPostsByUser(id: number) {
   const result = await pool.query(
-    "SELECT posts.id,posts.title, posts.content FROM posts JOIN users ON posts.user_id = users.id WHERE users.id = $1;",
+    "SELECT posts.id,posts.title, posts.content , users.name FROM posts JOIN users ON posts.user_id = users.id WHERE users.id = $1;",
     [id],
   );
   return result.rows;

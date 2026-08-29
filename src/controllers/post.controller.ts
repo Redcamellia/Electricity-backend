@@ -7,17 +7,21 @@ import {
 
 import AppError from "../Errors/appError";
 import { User } from "../types/User";
-import { getUserByEmail } from "../repositories/users.repository";
+import {
+  getUserByEmail,
+  getUserByIdDB,
+} from "../repositories/users.repository";
 import { Post } from "../types/Post";
 
 export async function getPostsController(req: Request, res: Response) {
+  console.log("i am returning all the posts");
   const results = await getAllPosts();
   res.status(200).json(results);
 }
 
 export async function getPostsByUserController(req: Request, res: Response) {
-  const id = req.params.id;
-  const results = await getAllPostsByUser(id as string);
+  const id = req.query.id;
+  const results = await getAllPostsByUser(parseInt(id as string));
   res.status(200).json(results);
 }
 export async function createPostController(req: Request, res: Response) {
@@ -33,4 +37,16 @@ export async function createPostController(req: Request, res: Response) {
   }
 
   res.status(201).json(post);
+}
+export async function getPostsByEmailController(req: Request, res: Response) {
+  console.log("i am in this controller");
+  const user = await getUserByEmail(req.query.email as string);
+  console.log(user.id);
+  if (user.id) {
+    const id = user.id;
+    const results = await getAllPostsByUser(id);
+    res.status(200).json(results);
+    return;
+  }
+  throw new AppError("user not found", 404);
 }

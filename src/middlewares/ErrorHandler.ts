@@ -10,6 +10,7 @@ export function ErrorHandler(
     res.status(err.statusCode).json({ error: err.message });
     return;
   }
+  console.log(err);
   res.status(500).json({ error: "internal server error" });
   return;
 }
