@@ -16,13 +16,14 @@ export async function authLoginController(req: Request, res: Response) {
   console.log(userPassword);
   const isValid = await comparePassword(req.body.password, userPassword);
   if (isValid) {
-    const token = sign(userObject, process.env.JWT_SECRET as string);
+    const token = sign(
+      userObject.id.toString(),
+      process.env.JWT_SECRET as string,
+    );
     res.status(200).json({ token: token });
     return;
   }
   throw new AppError("wrong credentials", 401);
-
-  //return JWT
 }
 export async function authSignUpController(req: Request, res: Response) {
   const hashedPassword = await hashPassword(req.body.password);
