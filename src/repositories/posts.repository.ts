@@ -20,8 +20,9 @@ export async function createPost(post: Post) {
   const content = post.content;
   const id = post.userId;
 
-  const insertionResult = pool.query(
+  const insertionResult = await pool.query(
     "INSERT INTO posts (title,content,user_id) VALUES ($1 , $2 , $3)",
     [title, content, id],
   );
+  return insertionResult.rowCount;
 }
