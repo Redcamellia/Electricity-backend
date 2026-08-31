@@ -25,6 +25,8 @@ export async function getPostsByUserController(req: Request, res: Response) {
   res.status(200).json(results);
 }
 export async function createPostController(req: Request, res: Response) {
+  console.log(req.body);
+
   const user = await getUserByEmail(req.headers.email as string);
   const id = user.id;
   const title = req.body.title;

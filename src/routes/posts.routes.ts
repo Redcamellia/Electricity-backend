@@ -5,10 +5,11 @@ import {
   getPostsController,
   getPostsByEmailController,
 } from "../controllers/post.controller";
+import { tokenAuthCheck } from "../middlewares/tokenAuthCheck";
 
 export const postsRouter = Router();
 
 postsRouter.get("/by-email", getPostsByEmailController);
 postsRouter.get("/:id", getPostsByUserController);
 postsRouter.get("/", getPostsController);
-postsRouter.post("/", createPostController);
+postsRouter.post("/", tokenAuthCheck, createPostController);
