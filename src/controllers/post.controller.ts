@@ -14,7 +14,6 @@ import {
 import { Post } from "../types/Post";
 
 export async function getPostsController(req: Request, res: Response) {
-  console.log("i am returning all the posts");
   const results = await getAllPosts();
   res.status(200).json(results);
 }
@@ -26,8 +25,8 @@ export async function getPostsByUserController(req: Request, res: Response) {
 }
 export async function createPostController(req: Request, res: Response) {
   console.log(req.body);
-
-  const user = await getUserByEmail(req.headers.email as string);
+  console.log("CONTROLLER USER:", req.user);
+  const user = req.user;
   const id = user.id;
   const title = req.body.title;
   const content = req.body.content;

@@ -17,7 +17,9 @@ export async function authLoginController(req: Request, res: Response) {
   const isValid = await comparePassword(req.body.password, userPassword);
   if (isValid) {
     const token = sign(
-      userObject.id.toString(),
+      {
+        userId: userObject.id,
+      },
       process.env.JWT_SECRET as string,
     );
     res.status(200).json({ token: token });

@@ -1,6 +1,5 @@
-import { Request, Response, NextFunction } from "express";
+import { NextFunction, Request, Response } from "express";
 import { verify } from "jsonwebtoken";
-import { getUserByEmail } from "../repositories/users.repository";
 import AppError from "../Errors/appError";
 
 export async function tokenAuthCheck(
@@ -8,19 +7,28 @@ export async function tokenAuthCheck(
   res: Response,
   next: NextFunction,
 ) {
-  const userSentToken = req.headers.authorization;
-  const email = req.headers.email;
-  const user = await getUserByEmail(email as string);
-  const userId = user.id;
-  const decoded = verify(
-    userSentToken as string,
-    process.env.JWT_SECRET as string,
-  );
-  if (decoded != userId.toString()) {
+  try {
+    const userSentToken = req.headers.authorization;
+
+    if (!userSentToken) {
+      throw new AppError("unauthorized", 401);
+    }
+    const decoded = verify(userSentToken, process.env.JWT_SECRET as string);
+
+    console.log("DECODED:", decoded);
+    console.log("TYPE:", typeof decoded);
+    if (typeof decoded === "object" && "userId" in decoded) {
+      const userId = decoded.userId;
+
+      console.log(userId);
+      req.user = {
+        id: userId,
+      };
+    }
+  } catch (error) {
     throw new AppError("unauthorized", 401);
-  } else {
-    // console.log("user is authorized");
   }
 
+  console.log("MIDDLEWARE USER:", req.user);
   next();
 }
