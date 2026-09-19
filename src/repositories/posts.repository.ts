@@ -11,7 +11,7 @@ export async function getPostOwner(post_id: number) {
     "SELECT user_id FROM posts WHERE posts.id = $1;",
     [post_id],
   );
-  return result.rows[0].user_id;
+  return result.rows[0];
 }
 export async function getAllPostsByUser(id: number) {
   const result = await pool.query(

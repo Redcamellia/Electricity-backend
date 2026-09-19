@@ -55,18 +55,22 @@ export async function getPostsByEmailController(req: Request, res: Response) {
 }
 
 export async function deletePostController(req: Request, res: Response) {
-  const post_id = req.params.id;
+  const post_id = Number(req.params.id);
   console.log("post id is : " + post_id);
   if (Number.isNaN(post_id)) {
     throw new AppError("post id must be a string", 400);
   }
 
-  const postOwner = await getPostOwner(Number(post_id));
+  const postOwnerPromise = await getPostOwner(Number(post_id));
+  if (postOwnerPromise == undefined) {
+    throw new AppError("post not found", 404);
+  }
+  const postOwner = postOwnerPromise.user_id;
   console.log("post owner is : " + postOwner);
   if (postOwner != req.user.id) {
-    throw new AppError("user unauthorized to delete this post", 401);
+    throw new AppError("user unauthorized to delete this post", 403);
   }
-  const result = await deletePost(Number(post_id));
+  const result = await deletePost(post_id);
   console.log(result);
   res.status(200).json(result);
 }
