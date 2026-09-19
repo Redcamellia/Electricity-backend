@@ -1,8 +1,10 @@
 import { application, Request, Response } from "express";
 import {
   createPost,
+  deletePost,
   getAllPosts,
   getAllPostsByUser,
+  getPostOwner,
 } from "../repositories/posts.repository";
 
 import AppError from "../Errors/appError";
@@ -19,7 +21,7 @@ export async function getPostsController(req: Request, res: Response) {
 }
 
 export async function getPostsByUserController(req: Request, res: Response) {
-  const id = req.query.id;
+  const id = req.params.id;
   const results = await getAllPostsByUser(parseInt(id as string));
   res.status(200).json(results);
 }
@@ -50,4 +52,21 @@ export async function getPostsByEmailController(req: Request, res: Response) {
     return;
   }
   throw new AppError("user not found", 404);
+}
+
+export async function deletePostController(req: Request, res: Response) {
+  const post_id = req.params.id;
+  console.log("post id is : " + post_id);
+  if (Number.isNaN(post_id)) {
+    throw new AppError("post id must be a string", 400);
+  }
+
+  const postOwner = await getPostOwner(Number(post_id));
+  console.log("post owner is : " + postOwner);
+  if (postOwner != req.user.id) {
+    throw new AppError("user unauthorized to delete this post", 401);
+  }
+  const result = await deletePost(Number(post_id));
+  console.log(result);
+  res.status(200).json(result);
 }
