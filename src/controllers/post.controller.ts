@@ -41,6 +41,8 @@ export async function createPostController(req: Request, res: Response) {
 
   res.status(201).json(post);
 }
+
+//deprecated, DO NOT use
 export async function getPostsByEmailController(req: Request, res: Response) {
   console.log("i am in this controller");
   const user = await getUserByEmail(req.query.email as string);
