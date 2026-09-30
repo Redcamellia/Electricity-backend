@@ -31,9 +31,12 @@ export async function authSignUpController(req: Request, res: Response) {
   const hashedPassword = await hashPassword(req.body.password);
   console.log(hashedPassword);
   const newUser = await addUserDB(
-    req.body.name,
+    req.body.username,
     req.body.email,
     hashedPassword,
+    req.body.display_name,
+    req.body.bio,
+    req.body.avatar_url,
   );
   console.log(newUser);
   res.status(201).json(newUser);

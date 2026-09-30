@@ -4,7 +4,7 @@ import { User } from "../types/User";
 
 export async function getUserByEmail(email: string): Promise<User> {
   const queryResult = await pool.query(
-    "SELECT name, email, id FROM users WHERE email=$1;",
+    "SELECT username, email, id FROM users WHERE email=$1;",
     [email],
   );
   const user: User = queryResult.rows[0];
@@ -16,7 +16,7 @@ export async function getUserByEmail(email: string): Promise<User> {
 
 export async function getUserByIdDB(id: number): Promise<User> {
   const queryResult = await pool.query(
-    "SELECT name,email,id FROM users WHERE id = $1",
+    "SELECT username,email,id FROM users WHERE id = $1",
     [id],
   );
   const user = queryResult.rows[0];
@@ -42,14 +42,14 @@ export async function getAllUsersDB() {
 export async function addUserDB(
   username: string,
   email: string,
-  password: string,
+  password_hash: string,
   display_name: string,
   bio: string,
   avatar_url: string,
 ) {
   const queryResult = await pool.query(
-    "INSERT INTO users (username , email , user_password , display_name , bio , avatar_url ) VALUES ($1 ,$2 , $3 , $4 , $5, $6) RETURNING *",
-    [username, email, password, display_name, bio, avatar_url],
+    "INSERT INTO users (username , email , password_hash , display_name , bio , avatar_url ) VALUES ($1 ,$2 , $3 , $4 , $5, $6) RETURNING *",
+    [username, email, password_hash, display_name, bio, avatar_url],
   );
   return queryResult.rows[0];
 }
@@ -65,10 +65,10 @@ export async function deleteUserDB(id: number) {
 
 export async function getUserPassword(email: string) {
   const queryResult = await pool.query(
-    "SELECT user_password FROM users WHERE email = $1",
+    "SELECT password_hash FROM users WHERE email = $1",
     [email],
   );
-  const userPassword = queryResult.rows[0].user_password;
+  const userPassword = queryResult.rows[0].password_hash;
   if (userPassword) {
     return userPassword;
   }

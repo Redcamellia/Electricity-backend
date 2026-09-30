@@ -13,7 +13,7 @@ import {
   getUserByEmail,
   getUserByIdDB,
 } from "../repositories/users.repository";
-import { Post } from "../types/Post";
+import { Post, PostCreationBlueprint } from "../types/Post";
 
 export async function getPostsController(req: Request, res: Response) {
   const results = await getAllPosts();
@@ -30,9 +30,8 @@ export async function createPostController(req: Request, res: Response) {
   console.log("CONTROLLER USER:", req.user);
   const user = req.user;
   const id = user.id;
-  const title = req.body.title;
   const content = req.body.content;
-  const post: Post = { userId: id, title: title, content: content };
+  const post: PostCreationBlueprint = { author_id: id, content: content };
   const result = await createPost(post);
 
   if (result == 0) {

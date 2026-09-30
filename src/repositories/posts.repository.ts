@@ -1,6 +1,6 @@
 import pool from "../db";
 import AppError from "../Errors/appError";
-import { Post } from "../types/Post";
+import { Post, PostCreationBlueprint } from "../types/Post";
 
 export async function getAllPosts() {
   const result = await pool.query("SELECT * FROM posts;");
@@ -21,12 +21,12 @@ export async function getAllPostsByUser(id: number) {
   return result.rows;
 }
 
-export async function createPost(post: Post) {
+export async function createPost(post: PostCreationBlueprint) {
   const content = post.content;
   const author_id = post.author_id;
 
   const insertionResult = await pool.query(
-    "INSERT INTO posts (content,user_id) VALUES ($1 , $2 )",
+    "INSERT INTO posts (content,author_id) VALUES ($1 , $2 )",
     [content, author_id],
   );
   return insertionResult.rowCount;
