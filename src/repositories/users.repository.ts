@@ -28,7 +28,7 @@ export async function getUserByIdDB(id: number): Promise<User> {
 
 export async function changeUserNameDB(argId: number, argName: string) {
   const result = await pool.query(
-    "UPDATE users SET name = $1 WHERE id = $2 RETURNING *",
+    "UPDATE users SET username = $1 WHERE id = $2 RETURNING *",
     [argName, argId],
   );
   return result.rows[0];
@@ -39,10 +39,17 @@ export async function getAllUsersDB() {
   return result.rows;
 }
 
-export async function addUserDB(name: string, email: string, password: string) {
+export async function addUserDB(
+  username: string,
+  email: string,
+  password: string,
+  display_name: string,
+  bio: string,
+  avatar_url: string,
+) {
   const queryResult = await pool.query(
-    "INSERT INTO users (name , email , user_password) VALUES ($1 ,$2 , $3) RETURNING *",
-    [name, email, password],
+    "INSERT INTO users (username , email , user_password , display_name , bio , avatar_url ) VALUES ($1 ,$2 , $3 , $4 , $5, $6) RETURNING *",
+    [username, email, password, display_name, bio, avatar_url],
   );
   return queryResult.rows[0];
 }

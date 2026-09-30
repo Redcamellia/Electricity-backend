@@ -15,20 +15,19 @@ export async function getPostOwner(post_id: number) {
 }
 export async function getAllPostsByUser(id: number) {
   const result = await pool.query(
-    "SELECT posts.id,posts.title, posts.content , users.name FROM posts JOIN users ON posts.user_id = users.id WHERE users.id = $1;",
+    "SELECT posts.id,posts.content, users.display_name , users.username FROM posts JOIN users ON posts.user_id = users.id WHERE users.id = $1;",
     [id],
   );
   return result.rows;
 }
 
 export async function createPost(post: Post) {
-  const title = post.title;
   const content = post.content;
-  const id = post.userId;
+  const author_id = post.author_id;
 
   const insertionResult = await pool.query(
-    "INSERT INTO posts (title,content,user_id) VALUES ($1 , $2 , $3)",
-    [title, content, id],
+    "INSERT INTO posts (content,user_id) VALUES ($1 , $2 )",
+    [content, author_id],
   );
   return insertionResult.rowCount;
 }

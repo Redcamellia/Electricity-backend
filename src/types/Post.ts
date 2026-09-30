@@ -1,5 +1,6 @@
 export type Post = {
-  title: string;
+  post_id: number;
+  created_at: Date;
   content: string;
-  userId: number;
+  author_id: number;
 };
