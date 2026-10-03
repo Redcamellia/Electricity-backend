@@ -22,7 +22,7 @@ export async function authLoginController(req: Request, res: Response) {
       },
       process.env.JWT_SECRET as string,
     );
-    res.status(200).json({ token: token });
+    res.status(200).json({ token: token, id: userObject.id });
     return;
   }
   throw new AppError("wrong credentials", 401);

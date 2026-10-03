@@ -15,7 +15,7 @@ export async function getPostOwner(post_id: number) {
 }
 export async function getAllPostsByUser(id: number) {
   const result = await pool.query(
-    "SELECT posts.id,posts.content, users.display_name , users.username FROM posts JOIN users ON posts.user_id = users.id WHERE users.id = $1;",
+    "SELECT posts.id,posts.content, users.display_name , users.username FROM posts JOIN users ON posts.author_id = users.id WHERE users.id = $1;",
     [id],
   );
   return result.rows;
